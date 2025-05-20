@@ -27,13 +27,20 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id)
 
   socket.on('join-room', (roomId, userId) => {
-    console.log(`User ${userId} joined room ${roomId} `)
+    console.log(`[${new Date().toISOString()}] User ${userId} joined room ${roomId}`)
+    console.log(`[${new Date().toISOString()}] Socket ${socket.id} joining room ${roomId}`)
     socket.join(roomId)
     socket.to(roomId).emit('user-connected', userId)
+    console.log(`[${new Date().toISOString()}] Emitted user-connected event to room ${roomId} for user ${userId}`)
+  })
+
+  socket.on('end-call', (roomId) => {
+    console.log(`[${new Date().toISOString()}] Call ended in room ${roomId}`)
+    io.to(roomId).emit('call-ended')
   })
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id)
+    console.log(`[${new Date().toISOString()}] User disconnected:`, socket.id)
   })
 })
 
